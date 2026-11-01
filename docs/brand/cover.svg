@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="410" viewBox="0 0 1200 410" role="img" aria-labelledby="title desc">
+<title id="title">WHO — What Happens Online?</title>
+<desc id="desc">An open-source browser privacy awareness experience, illustrated with a glowing eye and lines representing browser signals.</desc>
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#0a1d25"/><stop offset=".58" stop-color="#0f182f"/><stop offset="1" stop-color="#17132d"/></linearGradient>
+  <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#66f0d2"/><stop offset=".52" stop-color="#83c8fd"/><stop offset="1" stop-color="#bb91ff"/></linearGradient>
+  <radialGradient id="halo"><stop stop-color="#58e4c9" stop-opacity=".3"/><stop offset="1" stop-color="#58e4c9" stop-opacity="0"/></radialGradient>
+  <pattern id="grid" width="42" height="42" patternUnits="userSpaceOnUse"><path d="M42 0H0V42" fill="none" stroke="#ffffff" stroke-opacity=".055"/></pattern>
+</defs>
+<rect width="1200" height="410" rx="27" fill="url(#bg)"/>
+<rect width="1200" height="410" rx="27" fill="url(#grid)"/>
+<circle cx="945" cy="192" r="240" fill="url(#halo)"/>
+<g fill="none" stroke="#8feadf" stroke-opacity=".20">
+  <circle cx="946" cy="189" r="145"/><circle cx="946" cy="189" r="109"/><circle cx="946" cy="189" r="74"/>
+</g>
+<g stroke="url(#accent)" stroke-width="7" stroke-linejoin="round">
+  <path d="M821 189 Q946 54 1071 189 Q946 325 821 189Z" fill="#121e2f"/>
+  <circle cx="946" cy="189" r="54" fill="#142736"/>
+</g>
+<circle cx="946" cy="189" r="29" fill="url(#accent)"/>
+<circle cx="956" cy="178" r="11" fill="#122132"/>
+<g fill="#8aeedc"><circle cx="800" cy="83" r="4"/><circle cx="1102" cy="300" r="5"/><circle cx="774" cy="293" r="3"/></g>
+<rect x="47" y="42" width="244" height="30" rx="15" fill="#63e6ce" fill-opacity=".10" stroke="#65dfcc" stroke-opacity=".4"/>
+<text x="66" y="62" fill="#9cf3de" font-size="12" font-family="DejaVu Sans, Arial, sans-serif" letter-spacing="1.5">OPEN SOURCE  /  PRIVACY FIRST</text>
+<text x="45" y="224" fill="#f4fbff" font-size="140" font-weight="800" letter-spacing="-6" font-family="DejaVu Sans, Arial, sans-serif">WHO</text>
+<circle cx="429" cy="212" r="11" fill="#65edcd"/>
+<text x="50" y="276" fill="url(#accent)" font-size="32" font-weight="700" font-family="DejaVu Sans, Arial, sans-serif">WHAT HAPPENS ONLINE?</text>
+<text x="50" y="321" fill="#c6d5e5" font-size="21" font-family="DejaVu Sans, Arial, sans-serif">Your browser reveals more than you think.</text>
+<line x1="50" y1="350" x2="1150" y2="350" stroke="#93afc0" stroke-opacity=".22"/>
+<g fill="#a6bacd" font-size="14" font-family="DejaVu Sans, Arial, sans-serif" letter-spacing="1.2">
+  <text x="52" y="381">HTTP HEADERS</text><text x="244" y="381">BROWSER SIGNALS</text><text x="478" y="381">OPT-IN PERMISSIONS</text>
+</g>
+<g fill="#73e7ce"><circle cx="220" cy="375" r="3"/><circle cx="455" cy="375" r="3"/></g>
+</svg>
