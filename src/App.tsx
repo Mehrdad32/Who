@@ -72,7 +72,7 @@ function Footer() {
   const path = window.location.pathname.replace(/\/+$/, '') || '/';
   return <footer className="footer wrap">
     <div className="footer-nav-row">
-      <a href="/" className="footer-brand" aria-label="بازگشت به صفحه اصلی Who"><Eye size={20}/><strong>WHO<span className="brand-dot">.</span></strong></a>
+      <a href="/" className="footer-brand" aria-label="WHO — What Happens Online? | بازگشت به صفحه اصلی"><Eye size={20}/><strong>WHO<span className="brand-dot">.</span></strong></a>
       <nav className="footer-nav" aria-label="پیوندهای سایت">
         <a className={path === '/' || path === '/home' ? 'active' : ''} href="/">ماجراجویی</a>
         <a className={path === '/full' ? 'active' : ''} href="/full">نمای کامل</a>
@@ -105,7 +105,7 @@ function ShareButtons() {
   const share = async () => {
     try {
       if (navigator.share) {
-        await navigator.share({ title: 'Who — مرورگرت چقدر لو می‌ده؟', text: 'ببین سایت‌ها بدون اجازه چقدر درباره مرورگرت می‌فهمند!', url: SITE });
+        await navigator.share({ title: 'WHO — What Happens Online? | مرورگرت چقدر لو می‌ده؟', text: 'ببین سایت‌ها بدون اجازه چقدر درباره مرورگرت می‌فهمند!', url: SITE });
       } else {
         await navigator.clipboard.writeText(SITE);
         setFeedback('لینک کپی شد. برای دوستانت بفرست!');
