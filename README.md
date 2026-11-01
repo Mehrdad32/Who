@@ -1,59 +1,182 @@
-# Who · Browser Privacy Awareness
+<div align="center">
 
-> **What does your browser reveal?** An interactive, open-source, Persian-language privacy-awareness experience, built for `who.mehrdad32.ir`.
+<a href="https://who.mehrdad32.ir/" title="Explore the live WHO experience">
+  <img src="docs/brand/cover.svg" width="100%" alt="WHO — What Happens Online? Your browser reveals more than you think." />
+</a>
 
-[Live domain](https://who.mehrdad32.ir/) · [Creator](https://mehrdad32.ir/) · [Source](https://github.com/Mehrdad32/Who)
+# WHO — What Happens Online?
 
-## Features
+**An interactive, open-source journey into what websites can learn from your browser.**
 
-- **`/`** — Cinematic, step-by-step browser-data walkthrough, with opt-in permission experiments.
-- **`/full`** — Searchable table of HTTP request metadata and locally computed browser signals. No permission prompts.
-- **`/lite`** — IP, browser/version, operating system, and device category at a glance.
-- Right-to-left Persian UI with locally hosted **Vazirmatn** fonts, mobile-first layout, reduced-motion support and no external runtime scripts, fonts or analytics.
-- Every permission demo uses an explicit click. Camera, microphone and screen-share media tracks are stopped immediately; NFC scanning stops on step change.
-- Web Share API and copyable link at the end of the experience.
+<p><strong>Explore your digital footprint. Understand the signals. Stay in control.</strong></p>
 
-## Privacy architecture
+[**🚀 Explore Live Demo**](https://who.mehrdad32.ir/) &nbsp;·&nbsp;
+[**🔎 Full Report**](https://who.mehrdad32.ir/full) &nbsp;·&nbsp;
+[**⚡ Lite Report**](https://who.mehrdad32.ir/lite) &nbsp;·&nbsp;
+[**👤 Creator**](https://mehrdad32.ir/)
 
-The web app uses **no analytics, cookies, localStorage, sessionStorage, database, KV, R2, D1, third-party IP providers or custom logging**. In particular:
+**TypeScript** · **React** · **Vite** · **Cloudflare Pages** · **MIT License**
 
-1. The browser naturally sends HTTP request metadata to Cloudflare to load the website. The stateless `/api/info` Pages Function returns selected metadata from **that same request** (including the connecting IP and Cloudflare's existing coarse geolocation estimate) directly to the visitor. It does not persist it.
-2. JavaScript-derived browser signals (including canvas and audio fingerprint demonstrations) are computed locally and **never uploaded** to the server.
-3. Permission demonstrations run only after the visitor clicks a dedicated button. The site does not store the resulting data or upload file contents, camera frames or audio samples.
-4. The site doesn't install tracking cookies or register a service worker. All runtime assets come from the same origin.
+</div>
 
-**Important distinction:** Cloudflare, as the infrastructure provider, processes the usual network traffic and may keep operational/security logs depending on your Cloudflare account configuration and policies. This project does not control or promise deletion of provider-level logs. Disable Web Analytics, Zaraz and any extra monitoring rules if you intend to maintain the app's no-tracking design. External links and share targets are only contacted after user interaction.
+---
 
-IP geolocation, UA parsing, Client Hints and browser fingerprints may be incomplete, ambiguous, or intentionally reduced by browser privacy defenses. Data availability varies by browser and OS. Permission dialogs may not appear when permission was previously granted or denied.
+## ✨ What is WHO?
 
-## Deploy to Cloudflare Pages (Git integration)
+**WHO (What Happens Online?)** turns browser privacy into an experience anyone can understand.
 
-1. Open **Cloudflare Dashboard → Workers & Pages → Create application → Pages → Connect to Git**.
-2. Select **`Mehrdad32/Who`**, production branch **`main`**.
-3. Framework preset: **Vite**. Build command: `npm run build`. Output directory: **`dist`**. Root directory: `/`. The `/functions` folder is automatically detected for Cloudflare Pages Functions.
-4. Deploy. The Vite output contains `public/_routes.json`, limiting Function invocation to `/api/*`; other requests are static.
-5. In **Pages → Custom domains**, attach **`who.mehrdad32.ir`** and configure DNS as requested by Cloudflare. HTTPS is required for permission-based Web APIs.
-6. Verify `/`, `/lite`, `/full`, and `/api/info`. `/api/info` must respond with `Cache-Control: no-store` and never be cached by a user-defined Cloudflare rule.
+Visit the site, discover what a webpage can infer **without requesting permission**, and—only if you choose—explore what additional capabilities require your approval. Each discovery includes a plain-language explanation and a link to learn more.
 
-Cloudflare Pages SPA fallback handles deep links `/lite` and `/full` when there is no root `404.html`. For local API testing, build and use `npx wrangler pages dev dist` after installing Wrangler; Vite's standalone development server does not execute Pages Functions, so the IP field is unavailable in plain `npm run dev`.
+The experience is **Persian-first (RTL)**, mobile-friendly, and built around one principle: **educate without tracking visitors**.
 
-## Local development
+> [!IMPORTANT]
+> **WHO is an educational tool, not a fingerprinting or tracking service.** The application does not maintain visitor profiles, store experiment results, or transmit locally collected browser signals to its backend. Normal network requests still reach the hosting provider; see [Privacy & transparency](#-privacy--transparency).
 
-```bash
-npm install
-npm run dev
-npm run build
+## 🧭 Choose your experience
+
+| Route | Experience | What you'll see |
+|:---|:---|:---|
+| [`/`](https://who.mehrdad32.ir/) | **Interactive journey** | A guided story with discoveries, optional permission tests, progress, and a shareable ending |
+| [`/full`](https://who.mehrdad32.ir/full) | **Full report** | A searchable view of available HTTP request metadata and browser-side signals |
+| [`/lite`](https://who.mehrdad32.ir/lite) | **Lite report** | Your public IP, detected browser/version, operating system, and device category |
+
+### Designed to be explored
+
+- **Discover, don't guess.** Understand which data is part of an HTTP request and which values JavaScript can access locally.
+- **Permissions are opt-in.** Sensitive capabilities are demonstrated only after an explicit tap or click; visitors can skip them.
+- **Learn as you go.** Each item includes a short explanation and an external reference.
+- **One experience, every screen.** Responsive layouts, motion-aware transitions, accessible progress indicators, and a locally bundled **Vazirmatn** font.
+- **Easy to share.** Native sharing when available, with a copy-link fallback.
+- **No account required.** No signup, dashboard, or database.
+
+## 🔒 Privacy & transparency
+
+The **WHO application itself** does not use analytics scripts, third-party trackers, tracking cookies, visitor accounts, a database, or persistent client-side profiles.
+
+| Data / action | Where it is handled | Stored or uploaded by WHO? |
+|---|---|---|
+| Initial HTTPS requests and request headers | Cloudflare receives them to serve the website | **Not stored by application code** |
+| Public IP and coarse IP-based location | Reflected by the stateless `/api/info` endpoint from the request already received | **Not persisted by WHO** |
+| Browser, display, device hints, Canvas/Audio demonstrations | Computed in the visitor's browser | **Not uploaded** |
+| Camera, microphone, screen, NFC and other permission demonstrations | Initiated by an explicit user action, where supported | **No content uploaded or saved** |
+| Share button and educational links | Activated only when the visitor chooses | **No WHO tracking** |
+
+**Hosting-provider distinction:** Cloudflare necessarily processes network traffic and may retain security or operational logs according to the site owner's account settings and Cloudflare policies. A self-hosted deployment may have different logging behavior. WHO makes **no claim** that third-party infrastructure never processes or logs network metadata.
+
+The IP-based location is approximate; a VPN, proxy or mobile operator can change it. Browser versions, hardware information and fingerprint-like signals may be incomplete or deliberately reduced by privacy protections.
+
+### How the data flows
+
+```mermaid
+flowchart LR
+    A["Visitor's browser"] -->|"Normal HTTPS request"| B["Cloudflare Pages"]
+    B -->|"Request to /api/info"| C["Stateless Pages Function"]
+    C -->|"Reflect request metadata"| A
+    A -->|"Local JavaScript"| D["On-screen results"]
+    A -->|"Optional permission click"| E["Browser permission UI"]
+    E --> D
 ```
 
-**Tech:** React, TypeScript, Vite, Lucide, Fontsource/Vazirmatn, Cloudflare Pages Functions.
+**No visitor database, tracking pixel, or experiment-result collection pipeline.**
 
-## Security & limitations
+## 🛠 Run locally
 
-- Browsers mediate sensitive APIs. Some are available only over HTTPS, behind OS permissions, with user gesture, or on selected platforms.
-- Canvas/audio demo hashes are not stable unique identifiers, nor proof of identifying an individual.
-- `/api/info` reads request headers from the same-origin request only; it does not claim to expose every possible hidden header or internal IP address.
-- This is an educational demonstration, not a fingerprinting or tracking service.
+**Prerequisites:** Node.js and npm compatible with the versions specified in [`package.json`](package.json).
 
-## License
+```bash
+git clone https://github.com/Mehrdad32/Who.git
+cd Who
+npm install
+npm run dev
+```
 
-MIT (application code). Bundled Vazirmatn fonts are distributed under their own **SIL Open Font License 1.1**; see the upstream font package for license details.
+Open the local URL reported by Vite.
+
+```bash
+npm run check
+npm run build
+npm run preview
+```
+
+> [!NOTE]
+> `npm run dev` runs the Vite front end, **not** Cloudflare Pages Functions. The public IP and Cloudflare request metadata require a Pages-compatible environment; without one, these fields can appear unavailable.
+
+To test the built site together with its Pages Function locally, you can use Cloudflare's Wrangler CLI:
+
+```bash
+npm run build
+npx wrangler pages dev dist
+```
+
+## ☁️ Deploy your own copy to Cloudflare Pages
+
+You **do not** need to use the original project's GitHub account, domain, or Cloudflare Pages project name.
+
+1. **Fork** [this repository](https://github.com/Mehrdad32/Who/fork) into **your own GitHub account** (or push a clone to a repository you control).
+2. In your Cloudflare dashboard, create a **Pages** project using **Git integration** and select **your fork**.
+3. Configure the production branch and build settings:
+
+   | Setting | Value |
+   |---|---|
+   | Repository | `YOUR_GITHUB_USERNAME/YOUR_REPOSITORY` |
+   | Production branch | `main` (or your repository's default branch) |
+   | Framework preset | `Vite` |
+   | Build command | `npm run build` |
+   | Build output directory | `dist` |
+   | Root directory | Repository root |
+
+4. Deploy. Cloudflare Pages should discover [`functions/api/info.ts`](functions/api/info.ts) as a Pages Function. The [`public/_routes.json`](public/_routes.json) file limits Function invocation to the API path.
+5. Open **your own** `*.pages.dev` URL and test `/`, `/full`, `/lite`, and `/api/info`.
+6. **Optional:** Add a custom domain **that you control**, such as `who.example.com`, in **Pages → Custom domains** and follow the DNS instructions shown for your deployment.
+
+**For deployments handling visitor metadata:** keep the `/api/info` response non-cacheable (`Cache-Control: no-store`) and avoid adding Cloudflare Web Analytics, Zaraz, client-side analytics, or custom request logging if you want to preserve this project's privacy-first behavior.
+
+> **Original demo:** [who.mehrdad32.ir](https://who.mehrdad32.ir/) is the author's public instance—not a required deployment domain. Likewise, the original repository `Mehrdad32/Who` is the source you fork, not the repository you select in your own Cloudflare account.
+
+## 🧱 Technology
+
+| Layer | Technology |
+|---|---|
+| Front end | React, TypeScript, Vite |
+| UI | Responsive CSS, Lucide icons, Vazirmatn (self-hosted font assets) |
+| Browser experiments | Standard browser Web APIs |
+| Server-side metadata | Stateless Cloudflare Pages Function |
+| Hosting | Cloudflare Pages; source hosted on GitHub |
+
+## 🧪 Browser support & boundaries
+
+Most basic observations work in modern browsers; results depend on the browser, operating system, permissions, HTTPS context and privacy settings.
+
+- **Web NFC is NDEF-oriented**, not raw ISO-DEP/APDU access. WHO cannot communicate directly with an ePassport chip through Web NFC.
+- Camera, microphone, geolocation, screen capture, device chooser APIs and other demonstrations may be unavailable or previously permitted/denied.
+- Fingerprint-like results are **not reliable proof of identity** and are not guaranteed to be unique or stable.
+- The **Lite** view avoids the broader browser-metric collection used by the full experience.
+
+## 🤝 Contributing
+
+Contributions are welcome: accessibility improvements, better educational explanations, translations, browser compatibility fixes and privacy-preserving features.
+
+1. Fork the project and create a descriptive branch.
+2. Keep the no-tracking, no-storage principles intact.
+3. Run `npm run check` and `npm run build`.
+4. Open a pull request describing the change and how you tested it.
+
+For bugs or feature requests, use [GitHub Issues](https://github.com/Mehrdad32/Who/issues). Please **do not post personal IP addresses, device identifiers, or other sensitive information** in public reports.
+
+## 📄 License & attribution
+
+The application source code is licensed under [MIT](LICENSE). Vazirmatn font assets are distributed under their own [SIL Open Font License](https://scripts.sil.org/OFL); third-party dependencies retain their respective licenses.
+
+---
+
+<div align="center">
+
+**WHO — What Happens Online?**
+
+*Know what your browser reveals. Choose what you share.*
+
+Made with care by **[Mehrdad32](https://mehrdad32.ir/)**
+
+[Live demo](https://who.mehrdad32.ir/) · [GitHub repository](https://github.com/Mehrdad32/Who) · [Report an issue](https://github.com/Mehrdad32/Who/issues)
+
+</div>
