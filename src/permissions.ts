@@ -28,7 +28,7 @@ export const permissionDemos: PermissionDemo[] = [
   { id: 'camera', title: 'دوربین', description: 'سایت می‌تواند جریان تصویر دوربین انتخابی را دریافت کند.', hint: 'دوربین فقط برای آزمایش باز می‌شود و بلافاصله بسته خواهد شد. هیچ عکسی ثبت نمی‌شود.', button: 'امتحان دوربین', icon: Camera, supported: () => !!navigator.mediaDevices?.getUserMedia },
   { id: 'microphone', title: 'میکروفون', description: 'اجازه می‌تواند دسترسی به صدای میکروفون را فعال کند.', hint: 'در این آزمایش جریان میکروفون بلافاصله قطع می‌شود و هیچ صوتی ضبط نمی‌شود.', button: 'امتحان میکروفون', icon: Mic, supported: () => !!navigator.mediaDevices?.getUserMedia },
   { id: 'screen', title: 'اشتراک صفحه', description: 'با انتخاب پنجره یا صفحه، وب‌سایت می‌تواند تصویر آن را دریافت کند.', hint: 'پس از انتخاب، اشتراک بلافاصله متوقف می‌شود و چیزی ذخیره نمی‌گردد.', button: 'آزمایش اشتراک صفحه', icon: MonitorUp, supported: () => !!navigator.mediaDevices?.getDisplayMedia },
-  { id: 'clipboard', title: 'خواندن کلیپ‌بورد', description: 'بسته به مرورگر، خواندن متن کپی‌شده ممکن است به اجازه یا تعامل نیاز داشته باشد.', hint: 'تنها نمونه کوتاهی از متن روی صفحه خودت نمایش داده می‌شود.', button: 'خواندن متن کپی‌شده', icon: Clipboard, supported: () => !!nav().clipboard?.readText },
+  { id: 'clipboard', title: 'خواندن کلیپ‌بورد', description: 'بسته به مرورگر، خواندن متن کپی‌شده ممکن است به اجازه یا تعامل نیاز داشته باشد.', hint: 'برای حفظ حریم خصوصی حتی نمونه‌ای از متن هم نمایش نمی‌دهیم؛ فقط تعداد نویسه‌ها مشخص می‌شود.', button: 'خواندن متن کپی‌شده', icon: Clipboard, supported: () => !!nav().clipboard?.readText },
   { id: 'notification', title: 'اعلان‌های مرورگر', description: 'اگر اجازه بدهی، سایت می‌تواند اعلان نمایشی صادر کند.', hint: 'فقط وضعیت مجوز بررسی می‌شود؛ هیچ اعلان یا Push اشتراکی ثبت نمی‌کنیم.', button: 'درخواست اعلان', icon: Bell, supported: () => 'Notification' in window && typeof Notification.requestPermission === 'function' },
   { id: 'bluetooth', title: 'دستگاه بلوتوث', description: 'مرورگر می‌تواند با انتخاب تو به بعضی دستگاه‌های Bluetooth متصل شود.', hint: 'تنها نام دستگاه انتخاب‌شده نمایش داده می‌شود؛ اتصال یا انتقال داده انجام نمی‌شود.', button: 'انتخاب دستگاه بلوتوث', icon: Bluetooth, supported: () => !!nav().bluetooth?.requestDevice },
   { id: 'usb', title: 'دستگاه USB', description: 'انتخاب یک دستگاه USB پشتیبانی‌شده دسترسی بیشتری به صفحه می‌دهد.', hint: 'فقط اطلاعات عمومی دستگاه انتخابی نمایش داده می‌شود.', button: 'انتخاب دستگاه USB', icon: Usb, supported: () => !!nav().usb?.requestDevice },
@@ -67,7 +67,7 @@ export async function runPermission(id: string, signal: AbortSignal, onNfcEvent:
       }
       case 'clipboard': {
         const value = await navigator.clipboard.readText();
-        return `متن خوانده شد (${value.length} نویسه): «${value.slice(0, 65)}${value.length > 65 ? '…' : ''}» · فقط روی همین صفحه`;
+        return `امکان خواندن تأیید شد · تعداد نویسه‌های متن: ${value.length} · خود متن عمداً نمایش داده یا ارسال نشد.`;
       }
       case 'notification': return `وضعیت مجوز اعلان: ${await Notification.requestPermission()}`;
       case 'bluetooth': {

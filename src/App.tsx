@@ -18,18 +18,23 @@ const emptyDevice: DeviceSummary = { browser: 'در حال شناسایی', brow
 
 type DataState = { server: ServerInfo | null; device: DeviceSummary; metrics: Metric[]; ready: boolean; };
 
-function useWhoData(): DataState {
+function useWhoData(collectDetailedMetrics: boolean): DataState {
   const [data, setData] = useState<DataState>({ server: null, device: emptyDevice, metrics: [], ready: false });
   useEffect(() => {
     let active = true;
     void (async () => {
       const [server, device] = await Promise.all([requestServerInfo(), detectDevice()]);
-      if (active) setData(prev => ({ ...prev, server, device }));
+      if (!active) return;
+      if (!collectDetailedMetrics) {
+        setData({ server, device, metrics: [], ready: true });
+        return;
+      }
+      setData(prev => ({ ...prev, server, device }));
       const metrics = await collectMetrics(server, device);
       if (active) setData({ server, device, metrics, ready: true });
     })();
     return () => { active = false; };
-  }, []);
+  }, [collectDetailedMetrics]);
   return data;
 }
 
@@ -88,6 +93,10 @@ function MetricCard({ metric }: { metric: Metric }) {
     <p>{metric.detail}</p>
     <LearnMore topic={metric.id}/>
   </div>;
+}
+function focusCurrentHeading() {
+  const heading = document.querySelector<HTMLElement>('main h1');
+  if (heading) { heading.tabIndex = -1; heading.focus({ preventScroll: true }); }
 }
 function Loading() { return <div className="loading"><span className="loader"/>داریم اطلاعات قابل مشاهده را بررسی می‌کنیم...</div>; }
 
@@ -199,6 +208,7 @@ function Journey({ data, withPermission, onDone, onBackToChoice }: { data: DataS
   const cancel = () => { controller.current?.abort(); controller.current = null; setBusy(false); };
   useEffect(() => () => { controller.current?.abort(); }, []);
   useEffect(() => {
+    focusCurrentHeading();
     window.scrollTo({ top: 0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
   }, [index]);
   const next = () => { cancel(); if (index + 1 >= count) onDone(); else setIndex(v => v + 1); };
@@ -218,10 +228,11 @@ function Journey({ data, withPermission, onDone, onBackToChoice }: { data: DataS
   };
   return <div className="journey-wrap">
     <div className="journey-top"><div><small>سفر کشف حریم خصوصی</small><strong>مرحله {new Intl.NumberFormat('fa-IR').format(index + 1)} از {new Intl.NumberFormat('fa-IR').format(count)}</strong></div><Badge tone={isPermission ? 'violet' : 'mint'}>{isPermission ? 'با انتخاب تو' : 'بدون مجوز'}</Badge></div>
-    <div className="progress-track"><div style={{ width: `${((index + 1) / count) * 100}%` }}/></div>
+    <div className="progress-track" role="progressbar" aria-label="پیشرفت ماجراجویی" aria-valuemin={0} aria-valuemax={count} aria-valuenow={index + 1}><div style={{ width: `${((index + 1) / count) * 100}%` }}/></div>
     {current ? <PermissionView index={index - scenes.length} result={results[current.id]} busy={busy} inputRef={fileRef} onRequest={request}
       onFilePicked={file => setResults(prev => ({ ...prev, file: file ? `فایل «${file.name}» (${(file.size / 1024).toFixed(1)} KB) انتخاب شد؛ فقط نام و اندازه دیده شد، محتوای فایل خوانده نشد.` : 'فایلی انتخاب نشد.' }))}/> : <SceneView step={index} data={data}/>}
     <div className="journey-actions"><button className="button button-ghost" onClick={prev}><ArrowRight size={18}/> قبلی</button><span className="step-indicator"><span className="step-pulse"/> {isPermission ? 'بدون اجبار به دادن مجوز' : 'فقط مشاهده اطلاعات'}</span><button className="button button-primary" onClick={next}>{index + 1 === count ? 'دیدن نتیجه نهایی' : 'مرحله بعد'} <ArrowLeft size={18}/></button></div>
+    {isPermission && index + 1 < count && <button className="journey-end-early" onClick={() => { cancel(); onDone(); }}>فعلاً از بقیه آزمایش‌های اختیاری بگذر و نتیجه رو ببین <ArrowLeft size={15}/></button>}
   </div>;
 }
 function Finish({ data, onRestart }: { data: DataState; onRestart: () => void }) {
@@ -229,6 +240,7 @@ function Finish({ data, onRestart }: { data: DataState; onRestart: () => void })
   return <div className="finish-page reveal"><div className="finish-illustration"><ShieldCheck size={74}/></div><Badge tone="mint">پرونده بسته شد؛ آگاهی باز شد!</Badge><h1>حالا می‌دونی پشت هر کلیک چه خبره. <span className="gradient-text">✨</span></h1><p className="lead">بعضی داده‌ها در درخواست اینترنتی می‌روند، بعضی فقط برای JavaScript قابل خواندن‌اند، و قابلیت‌های حساس به رضایت تو نیاز دارند.</p>
     <div className="finish-stats"><div><strong>{new Intl.NumberFormat('fa-IR').format(data.metrics.length)}</strong><span>مورد بررسی‌شده</span></div><div><strong>{new Intl.NumberFormat('fa-IR').format(http)}</strong><span>مورد HTTP</span></div><div><strong>{new Intl.NumberFormat('fa-IR').format(data.metrics.length - http)}</strong><span>مورد سمت مرورگر</span></div></div>
     <div className="finish-tips"><h3><ShieldCheck size={21}/> سه کار ساده برای حفظ حریم خصوصی</h3><p>مرورگرت را به‌روز نگه دار؛ مجوزهای دوربین و موقعیت را فقط به سایت‌های معتبر بده؛ و بدان حالت ناشناس، اثر انگشت مرورگر را کاملاً از بین نمی‌برد.</p></div>
+    <div className="finish-lessons"><article><strong>VPN چه چیزی را پنهان می‌کند؟</strong><p>آدرس IP و موقعیت تقریبی اتصال می‌تواند عوض شود؛ اما مشخصات مرورگر و نمایشگر لزوماً نه.</p></article><article><strong>حالت ناشناس چطور؟</strong><p>ردپای محلی مرور را کمتر نگه می‌دارد، ولی وب‌سایت همچنان می‌تواند برخی اطلاعات دستگاه را ببیند.</p></article></div>
     <h2>این تجربه رو به یک دوست هم نشون بده!</h2><p className="muted">شاید اون هم از دیدن اطلاعات مرورگرش غافلگیر بشه.</p><ShareButtons/>
     <div className="action-row center-actions"><button className="button button-ghost" onClick={onRestart}><RefreshCcw size={17}/> شروع دوباره</button><a href="/full" className="button button-secondary"><Terminal size={18}/> نمای کامل اطلاعات</a></div>
   </div>;
@@ -237,6 +249,7 @@ function Home({ data }: { data: DataState }) {
   const [phase, setPhase] = useState<'intro' | 'choice' | 'journey' | 'finish'>('intro');
   const [includePermissions, setIncludePermissions] = useState(false);
   useEffect(() => {
+    focusCurrentHeading();
     window.scrollTo({ top: 0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
   }, [phase]);
   return <main className="main wrap">{phase === 'intro' ? <Intro data={data} onStart={() => setPhase('choice')}/> : phase === 'choice' ? <Choice opted={includePermissions} setOpted={setIncludePermissions} onNext={() => setPhase('journey')} onBack={() => setPhase('intro')}/> : phase === 'journey' ? <Journey data={data} withPermission={includePermissions} onDone={() => setPhase('finish')} onBackToChoice={() => setPhase('choice')}/> : <Finish data={data} onRestart={() => { setIncludePermissions(false); setPhase('intro'); }}/>}</main>;
@@ -263,7 +276,7 @@ function Full({ data }: { data: DataState }) {
 }
 function NotFound() { return <main className="main wrap missing"><CircleHelp size={58}/><h1>این مسیر پیدا نشد!</h1><p>می‌تونی از صفحه اصلی ماجراجویی رو آغاز کنی.</p><a className="button button-primary" href="/">بازگشت به صفحه اصلی <ArrowLeft size={18}/></a></main>; }
 export default function App() {
-  const data = useWhoData();
   const path = window.location.pathname.replace(/\/+$/, '') || '/';
+  const data = useWhoData(path !== '/lite');
   return <div className="app-shell"><div className="glow glow-one"/><div className="glow glow-two"/>{path === '/' || path === '/home' ? <Home data={data}/> : path === '/full' ? <Full data={data}/> : path === '/lite' ? <Lite data={data}/> : <NotFound/>}<Footer/></div>;
 }
