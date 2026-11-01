@@ -3,9 +3,9 @@ import type { ReactNode, RefObject } from 'react';
 import {
   ArrowLeft, ArrowRight, BadgeCheck, Check,
   CircleHelp, Copy, Eye, Github, Globe2, Heart,
-  Info, LockKeyhole, Menu, MonitorSmartphone, MousePointer2,
+  Info, LockKeyhole, BookOpen, ExternalLink, MonitorSmartphone, MousePointer2,
   Radio, RefreshCcw, Search, Share2, Shield, ShieldCheck, ShieldOff,
-  Sparkles, Terminal, UnlockKeyhole, X
+  Sparkles, Terminal, UnlockKeyhole
 } from 'lucide-react';
 import { collectMetrics, detectDevice, requestServerInfo, scenes } from './detect';
 import type { DeviceSummary, Metric, ServerInfo } from './detect';
@@ -36,24 +36,49 @@ function useWhoData(): DataState {
 function Badge({ children, tone = 'neutral' }: { children: ReactNode; tone?: 'neutral' | 'mint' | 'violet' | 'rose' }) {
   return <span className={`badge badge-${tone}`}>{children}</span>;
 }
-function Header() {
-  const [menu, setMenu] = useState(false);
-  const page = window.location.pathname.replace(/\/+$/, '') || '/';
-  return <header className="topbar wrap">
-    <a className="brand" href="/" aria-label="Who - صفحه اصلی"><span className="logo"><Eye size={21} strokeWidth={2.4} /></span><span>WHO<span className="brand-dot">.</span></span><span className="brand-caption">آینه مرورگر تو</span></a>
-    <nav className={menu ? 'navlinks nav-open' : 'navlinks'} aria-label="صفحات سایت">
-      <a className={page === '/' || page === '/home' ? 'active' : ''} href="/">تجربه تعاملی</a>
-      <a className={page === '/full' ? 'active' : ''} href="/full">نمای کامل</a>
-      <a className={page === '/lite' ? 'active' : ''} href="/lite">نمای سبک</a>
-      <a href={REPO} target="_blank" rel="noopener noreferrer"><Github size={16}/> سورس پروژه</a>
-    </nav>
-    <button className="menu-button" aria-label={menu ? 'بستن فهرست' : 'باز کردن فهرست'} aria-expanded={menu} onClick={() => setMenu(!menu)}>{menu ? <X size={20} /> : <Menu size={20}/>}</button>
-  </header>;
+
+const WIKI_TERMS: Record<string, string> = {
+  ip: 'نشانی آی پی', ipgeo: 'مکان یابی جغرافیایی', isp: 'ارائه دهنده خدمات اینترنت',
+  browser: 'مرورگر وب', os: 'سیستم عامل', device: 'دستگاه همراه', ua: 'عامل کاربر',
+  accept: 'پروتکل انتقال ابرمتن', acceptEncoding: 'فشرده سازی داده ها',
+  acceptLanguage: 'بین المللی سازی و بومی سازی', referer: 'ارجاع دهنده اچ تی تی پی',
+  clientHints: 'اثر انگشت دستگاه', fetchMeta: 'امنیت وب', privacyHeaders: 'ردیابی اینترنتی',
+  lang: 'بومی سازی نرم افزار', timezone: 'منطقه زمانی', clock: 'زمان سیستم',
+  display: 'وضوح تصویر', viewport: 'طراحی وب واکنش گرا', displayColor: 'عمق رنگ',
+  accessibility: 'دسترس پذیری وب', touch: 'صفحه لمسی', cpu: 'پردازنده چند هسته ای',
+  ram: 'حافظه دسترسی تصادفی', gpu: 'واحد پردازش گرافیکی', network: 'شبکه رایانه ای',
+  battery: 'باتری', cookies: 'کوکی اچ تی تی پی', storage: 'ذخیره سازی وب',
+  features: 'رابط برنامه نویسی کاربردی وب', codecs: 'کدک', canvas: 'اثر انگشت مرورگر',
+  audio: 'اثر انگشت مرورگر', geolocation: 'مکان یابی جغرافیایی', camera: 'وب کم',
+  microphone: 'میکروفون', screen: 'اشتراک گذاری صفحه نمایش', clipboard: 'بریده دان',
+  notification: 'اعلان فشاری', bluetooth: 'بلوتوث', usb: 'گذرگاه سریال جهانی',
+  nfc: 'ارتباط حوزه نزدیک', serial: 'درگاه سریال', hid: 'دستگاه رابط انسانی',
+  file: 'مجوز دسترسی', contacts: 'حریم خصوصی اطلاعات', fonts: 'قلم رایانه ای',
+  windows: 'چند نمایشگری', orientation: 'شتاب سنج',
+};
+function LearnMore({ topic }: { topic: string }) {
+  const search = WIKI_TERMS[topic] ?? 'حریم خصوصی اینترنت';
+  return <a className="learn-more" href={`https://fa.wikipedia.org/w/index.php?search=${encodeURIComponent(search)}`}
+    target="_blank" rel="nofollow noopener noreferrer" title={`مطالعه درباره ${search} در ویکی‌پدیای فارسی`}>
+    <BookOpen size={15}/><span>بیشتر بدانید</span><ExternalLink size={13}/>
+  </a>;
 }
 function Footer() {
+  const path = window.location.pathname.replace(/\/+$/, '') || '/';
   return <footer className="footer wrap">
-    <div className="footer-note"><ShieldCheck size={17} /><span>بدون ردیاب · بدون دیتابیس · بدون ارسال اطلاعات آزمایش‌ها به سرور</span></div>
-    <div className="footer-links"><a href={MAKER} target="_blank" rel="noopener noreferrer">ساخته‌شده با <Heart size={14} fill="currentColor"/> توسط مهرداد۳۲</a><a href={REPO} target="_blank" rel="noopener noreferrer"><Github size={15}/> متن‌باز</a></div>
+    <div className="footer-nav-row">
+      <a href="/" className="footer-brand" aria-label="بازگشت به صفحه اصلی Who"><Eye size={20}/><strong>WHO<span className="brand-dot">.</span></strong></a>
+      <nav className="footer-nav" aria-label="پیوندهای سایت">
+        <a className={path === '/' || path === '/home' ? 'active' : ''} href="/">ماجراجویی</a>
+        <a className={path === '/full' ? 'active' : ''} href="/full">نمای کامل</a>
+        <a className={path === '/lite' ? 'active' : ''} href="/lite">نمای سبک</a>
+        <a href={REPO} target="_blank" rel="noopener noreferrer"><Github size={16}/> سورس پروژه</a>
+      </nav>
+    </div>
+    <div className="footer-bottom">
+      <div className="footer-note"><ShieldCheck size={17} /><span>بدون ردیاب · بدون دیتابیس · بدون ارسال نتایج آزمایش‌ها به سرور</span></div>
+      <div className="footer-links"><a href={MAKER} target="_blank" rel="noopener noreferrer">ساخته‌شده با <Heart size={14} fill="currentColor"/> توسط مهرداد۳۲</a></div>
+    </div>
   </footer>;
 }
 function MetricCard({ metric }: { metric: Metric }) {
@@ -61,6 +86,7 @@ function MetricCard({ metric }: { metric: Metric }) {
     <div className="metric-top"><span>{metric.title}</span><Badge tone={metric.source === 'HTTP' ? 'violet' : 'mint'}>{metric.source === 'HTTP' ? 'دریافتی سرور' : 'فقط مرورگر'}</Badge></div>
     <div className="metric-value" dir="auto">{metric.value}</div>
     <p>{metric.detail}</p>
+    <LearnMore topic={metric.id}/>
   </div>;
 }
 function Loading() { return <div className="loading"><span className="loader"/>داریم اطلاعات قابل مشاهده را بررسی می‌کنیم...</div>; }
@@ -93,16 +119,16 @@ function Intro({ data, onStart }: { data: DataState; onStart: () => void }) {
   return <div className="hero-view reveal">
     <div className="hero-grid">
       <section className="hero-content">
-        <div className="eyebrow"><span className="pulse"/><span>یک تجربه واقعی درباره حریم خصوصی تو</span><Sparkles size={15}/></div>
         <h1>فکر می‌کنی<br/><span className="gradient-text">مرورگرت چی ازت لو می‌ده؟</span></h1>
+        <div className="eyebrow"><span className="pulse"/><span>یک تجربه واقعی درباره حریم خصوصی تو</span><Sparkles size={15}/></div>
         <p className="hero-description">هنوز هیچ اجازه‌ای ندادی؛ اما همین الان چند سرنخ درباره دستگاهت داریم. بیا پرده‌به‌پرده کشف کنیم وب‌سایت‌ها چی می‌فهمن.</p>
+        <div className="microcopy"><LockKeyhole size={16}/> داده‌های آزمایش‌ها ارسال یا ذخیره نمی‌شن. <a href={REPO} target="_blank" rel="noopener noreferrer">کد متن‌باز رو ببین <ArrowLeft size={13}/></a></div>
         <div className="hero-readouts">
           <div className="readout"><MonitorSmartphone size={21}/><div><small>مرورگر تو</small><strong dir="ltr">{data.device.browser} {data.device.browserVersion}</strong></div></div>
           <div className="readout"><Globe2 size={21}/><div><small>دستگاه و سیستم‌عامل</small><strong>{data.device.kind} · {data.device.os}</strong></div></div>
         </div>
         <div className="surprise"><span className="surprise-icon"><Eye size={22}/></span><div><b>اولین غافلگیری!</b><p>{surprise ? `حتی بدون اجازه GPS، از روی IP می‌شه حدس زد اتصال اینترنتت به «${surprise}» مربوطه! البته ممکنه VPN یا اپراتور این تخمین رو تغییر بده.` : `بدون درخواست هیچ مجوزی می‌شه منطقه زمانی دستگاهت رو فهمید: ${Intl.DateTimeFormat().resolvedOptions().timeZone || 'نامشخص'}. عجیب نیست؟`}</p></div></div>
         <button className="button button-primary button-big" onClick={onStart}>شروع ماجراجویی <ArrowLeft size={21}/></button>
-        <div className="microcopy"><LockKeyhole size={16}/> نه اطلاعات آزمایش‌ها رو ارسال می‌کنیم، نه ذخیره می‌کنیم. <a href={REPO} target="_blank" rel="noopener noreferrer">کدش رو خودت بررسی کن <ArrowLeft size={13}/></a></div>
       </section>
       <div className="hero-art" aria-hidden="true">
         <div className="orbit orbit-a"/><div className="orbit orbit-b"/><div className="orbit orbit-c"/>
@@ -153,6 +179,7 @@ function PermissionView({ index, result, busy, onRequest, onFilePicked, inputRef
     <div className="permission-visual"><span className="permission-ring"><Icon size={60} strokeWidth={1.4}/></span><span className="permission-lock"><LockKeyhole size={19}/></span></div>
     <h1>{p.title}</h1><p className="lead">{p.description}</p>
     <div className="hint-box"><Shield size={21}/>{p.hint}</div>
+    <div className="permission-learn"><LearnMore topic={p.id}/></div>
     {supported ? <button disabled={busy} className="button button-primary button-big" onClick={onRequest}>{busy ? 'در حال انجام آزمایش...' : p.button}<ArrowLeft size={20}/></button>
       : <div className="unsupported"><ShieldOff size={21}/> این قابلیت در مرورگر فعلی در دسترس نیست. این خودش یک نکته امنیتی جالب است!</div>}
     {result && <div className="permission-result" role="status"><BadgeCheck size={22}/><span>{result}</span></div>}
@@ -171,6 +198,9 @@ function Journey({ data, withPermission, onDone, onBackToChoice }: { data: DataS
   const current = isPermission ? permissionDemos[index - scenes.length] : null;
   const cancel = () => { controller.current?.abort(); controller.current = null; setBusy(false); };
   useEffect(() => () => { controller.current?.abort(); }, []);
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+  }, [index]);
   const next = () => { cancel(); if (index + 1 >= count) onDone(); else setIndex(v => v + 1); };
   const prev = () => { cancel(); if (index === 0) onBackToChoice(); else setIndex(v => v - 1); };
   const request = () => {
@@ -206,16 +236,19 @@ function Finish({ data, onRestart }: { data: DataState; onRestart: () => void })
 function Home({ data }: { data: DataState }) {
   const [phase, setPhase] = useState<'intro' | 'choice' | 'journey' | 'finish'>('intro');
   const [includePermissions, setIncludePermissions] = useState(false);
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+  }, [phase]);
   return <main className="main wrap">{phase === 'intro' ? <Intro data={data} onStart={() => setPhase('choice')}/> : phase === 'choice' ? <Choice opted={includePermissions} setOpted={setIncludePermissions} onNext={() => setPhase('journey')} onBack={() => setPhase('intro')}/> : phase === 'journey' ? <Journey data={data} withPermission={includePermissions} onDone={() => setPhase('finish')} onBackToChoice={() => setPhase('choice')}/> : <Finish data={data} onRestart={() => { setIncludePermissions(false); setPhase('intro'); }}/>}</main>;
 }
 function Lite({ data }: { data: DataState }) {
   const entries = [
-    { label: 'IP عمومی', value: data.server?.ip || 'در این محیط قابل دریافت نیست', icon: Globe2 },
-    { label: 'مرورگر', value: `${data.device.browser} ${data.device.browserVersion}`, icon: Eye },
-    { label: 'سیستم‌عامل', value: data.device.os, icon: MonitorSmartphone },
-    { label: 'نوع دستگاه', value: data.device.kind, icon: Radio }
+    { label: 'IP عمومی', topic: 'ip', value: data.server?.ip || 'در این محیط قابل دریافت نیست', icon: Globe2 },
+    { label: 'مرورگر', topic: 'browser', value: `${data.device.browser} ${data.device.browserVersion}`, icon: Eye },
+    { label: 'سیستم‌عامل', topic: 'os', value: data.device.os, icon: MonitorSmartphone },
+    { label: 'نوع دستگاه', topic: 'device', value: data.device.kind, icon: Radio }
   ];
-  return <main className="main wrap page-view"><div className="page-heading"><Badge tone="mint">WHO / LITE</Badge><h1>تو، در یک نگاه.</h1><p>فقط چهار مورد مهم؛ بدون درخواست مجوز یا ذخیره داده.</p></div><div className="lite-panel"><div className="lite-top"><span><Eye size={24}/> نمای سبک</span><Badge tone="mint">زنده</Badge></div>{entries.map(({ label, value, icon: Icon }) => <div className="lite-row" key={label}><span><Icon size={20}/>{label}</span><strong dir="auto">{value}</strong></div>)}</div><div className="below-panel"><span><ShieldCheck size={19}/> هیچ‌یک از نتایج این صفحه ذخیره نمی‌شوند.</span><a href="/" className="button button-primary">کشف اطلاعات بیشتر <ArrowLeft size={18}/></a></div></main>;
+  return <main className="main wrap page-view"><div className="page-heading"><Badge tone="mint">WHO / LITE</Badge><h1>تو، در یک نگاه.</h1><p>فقط چهار مورد مهم؛ بدون درخواست مجوز یا ذخیره داده.</p></div><div className="lite-panel"><div className="lite-top"><span><Eye size={24}/> نمای سبک</span><Badge tone="mint">زنده</Badge></div>{entries.map(({ label, topic, value, icon: Icon }) => <div className="lite-row" key={label}><span><Icon size={20}/>{label}</span><div className="lite-answer"><strong dir="auto">{value}</strong><LearnMore topic={topic}/></div></div>)}</div><div className="below-panel"><span><ShieldCheck size={19}/> هیچ‌یک از نتایج این صفحه ذخیره نمی‌شوند.</span><a href="/" className="button button-primary">کشف اطلاعات بیشتر <ArrowLeft size={18}/></a></div></main>;
 }
 function Full({ data }: { data: DataState }) {
   const [query, setQuery] = useState('');
@@ -224,7 +257,7 @@ function Full({ data }: { data: DataState }) {
   return <main className="main wrap page-view"><div className="page-heading"><Badge tone="violet">WHO / FULL</Badge><h1>تمام سرنخ‌ها، یک‌جا.</h1><p>اطلاعات واقعی قابل مشاهده بدون درخواست مجوز؛ با تفکیک داده‌های HTTP و JavaScript. این جدول آزمایش مجوزدار اجرا نمی‌کند.</p></div>
     <div className="full-toolbar"><label className="searchbox"><Search size={18}/><input value={query} onChange={e => setQuery(e.target.value)} placeholder="جستجو در اطلاعات..." aria-label="جستجو در جدول"/></label><div className="tabs" role="group" aria-label="فیلتر منبع اطلاعات"><button className={filter === 'all' ? 'selected' : ''} onClick={() => setFilter('all')}>همه</button><button className={filter === 'HTTP' ? 'selected' : ''} onClick={() => setFilter('HTTP')}>سرور HTTP</button><button className={filter === 'JavaScript' ? 'selected' : ''} onClick={() => setFilter('JavaScript')}>مرورگر JS</button></div></div>
     <div className="full-info"><Info size={19}/> داده‌های HTTP هنگام بارگذاری سایت به سرور می‌رسند؛ داده‌های JavaScript اینجا فقط روی دستگاهت خوانده می‌شوند و هیچ‌کدام از آن‌ها برای ذخیره‌سازی آپلود نمی‌شوند.</div>
-    <div className="table-container"><table className="full-table"><thead><tr><th>اطلاعات</th><th>مقدار تشخیص‌داده‌شده</th><th>منبع</th><th>توضیح</th></tr></thead><tbody>{items.map(m => <tr key={m.id}><td className="table-title">{m.title}</td><td className="table-value" dir="auto">{m.value}</td><td><Badge tone={m.source === 'HTTP' ? 'violet' : 'mint'}>{m.source === 'HTTP' ? 'HTTP' : 'JS'}</Badge></td><td className="table-detail">{m.detail}</td></tr>)}</tbody></table>{!data.ready && <Loading/>}{data.ready && !items.length && <div className="empty-search">موردی با این جستجو پیدا نشد.</div>}</div>
+    <div className="table-container"><table className="full-table"><thead><tr><th>اطلاعات</th><th>مقدار تشخیص‌داده‌شده</th><th>منبع</th><th>توضیح</th></tr></thead><tbody>{items.map(m => <tr key={m.id}><td className="table-title">{m.title}</td><td className="table-value" dir="auto">{m.value}</td><td><Badge tone={m.source === 'HTTP' ? 'violet' : 'mint'}>{m.source === 'HTTP' ? 'HTTP' : 'JS'}</Badge></td><td className="table-detail">{m.detail}<LearnMore topic={m.id}/></td></tr>)}</tbody></table>{!data.ready && <Loading/>}{data.ready && !items.length && <div className="empty-search">موردی با این جستجو پیدا نشد.</div>}</div>
     <div className="below-panel"><span><ShieldCheck size={20}/> بدون کوکی ردیابی، دیتابیس یا انتقال داده‌های JavaScript به سرور</span><a className="button button-secondary" href="/lite">نمای سبک <ArrowLeft size={18}/></a></div>
   </main>;
 }
@@ -232,5 +265,5 @@ function NotFound() { return <main className="main wrap missing"><CircleHelp siz
 export default function App() {
   const data = useWhoData();
   const path = window.location.pathname.replace(/\/+$/, '') || '/';
-  return <div className="app-shell"><div className="glow glow-one"/><div className="glow glow-two"/><Header/>{path === '/' || path === '/home' ? <Home data={data}/> : path === '/full' ? <Full data={data}/> : path === '/lite' ? <Lite data={data}/> : <NotFound/>}<Footer/></div>;
+  return <div className="app-shell"><div className="glow glow-one"/><div className="glow glow-two"/>{path === '/' || path === '/home' ? <Home data={data}/> : path === '/full' ? <Full data={data}/> : path === '/lite' ? <Lite data={data}/> : <NotFound/>}<Footer/></div>;
 }
