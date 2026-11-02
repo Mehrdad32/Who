@@ -79,3 +79,134 @@ main h1:focus{outline:none}
  .journey-actions .button{min-height:44px}
  .finish-lessons{grid-template-columns:minmax(0,1fr)}
 }
+
+
+/* Laptop first-fold optimization — WHO v0.2.1 */
+@media (min-width: 1050px) and (max-height: 1050px) {
+  /* Only the home intro is compressed: /full, /lite and the wizard stay unchanged. */
+  .main:has(> .hero-view) {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+  .main > .hero-view {
+    flex: 1;
+    min-height: 0;
+    padding-block: 8px 0;
+    justify-content: space-between;
+  }
+  .hero-view > .hero-grid {
+    flex: 1;
+    min-height: 0;
+    grid-template-columns: minmax(0, 1.24fr) minmax(0, .76fr);
+    gap: clamp(12px, 1.6vw, 30px);
+    align-items: center;
+  }
+  .hero-content { min-width: 0; max-width: none; }
+  .hero-content h1 {
+    margin: 0 0 10px;
+    font-size: clamp(36px, 3.25vw, 54px);
+    line-height: 1.24;
+    letter-spacing: -1.3px;
+  }
+  .hero-content .eyebrow {
+    font-size: 11px;
+    padding: 6px 12px;
+    margin-bottom: 11px;
+  }
+  .hero-description {
+    font-size: clamp(12px, 1.02vw, 15px);
+    line-height: 1.8;
+    max-width: none;
+    margin: 0 0 8px;
+  }
+  .hero-content .microcopy {
+    margin: 0 0 12px;
+    font-size: 10.5px;
+    line-height: 1.7;
+  }
+  .hero-readouts {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+  .hero-readouts .readout {
+    min-width: 0;
+    max-width: none;
+    min-height: 64px;
+    padding: 10px 12px;
+  }
+  .readout small { font-size: 10px; }
+  .hero-readouts .readout strong {
+    max-width: none;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: unset;
+    font-size: 11px;
+    line-height: 1.55;
+  }
+  .surprise {
+    margin: 10px 0 11px;
+    padding: 10px 13px;
+    gap: 10px;
+  }
+  .surprise b { font-size: 13px; }
+  .surprise p { line-height: 1.7; font-size: 11px; }
+  .surprise-icon { width: 35px; height: 35px; }
+  .hero-content .button-big {
+    min-height: 49px;
+    padding: 11px 25px;
+    font-size: 14px;
+  }
+  .hero-art {
+    height: min(45svh, 380px);
+    width: 100%;
+    max-width: 490px;
+    justify-self: center;
+  }
+  .orbit-a { width: 190px; height: 190px; }
+  .orbit-b { width: 270px; height: 270px; }
+  .orbit-c { width: 365px; height: 365px; }
+  .hero-eye { width: 150px; height: 150px; }
+  .hero-eye svg { width: 80px; height: 80px; }
+  .orbit-card-one { top: 11%; right: 0; }
+  .orbit-card-two { bottom: 13%; left: 0; }
+  .orbit-label-one { top: 12%; }
+  .orbit-label-two { bottom: 10%; }
+  .hero-view .trust-strip {
+    flex: none;
+    margin: 0;
+    padding: 9px 0 8px;
+    gap: 12px 30px;
+    font-size: 11px;
+  }
+  .app-shell:has(.hero-view) > .footer {
+    flex: none;
+    gap: 8px;
+    padding-block: 10px 11px;
+  }
+  .app-shell:has(.hero-view) .footer-nav-row { gap: 12px; }
+  .app-shell:has(.hero-view) .footer-brand { font-size: 18px; }
+  .app-shell:has(.hero-view) .footer-bottom { padding-top: 8px; }
+}
+@media (min-width: 1050px) and (max-height: 760px) {
+  .hero-content h1 {
+    font-size: clamp(33px, 2.95vw, 48px);
+    line-height: 1.18;
+    margin-bottom: 8px;
+  }
+  .hero-content .eyebrow { margin-bottom: 8px; padding-block: 4px; }
+  .hero-description { font-size: 12px; line-height: 1.65; margin-bottom: 6px; }
+  .hero-content .microcopy { margin-bottom: 8px; }
+  .hero-readouts .readout { min-height: 56px; padding: 8px 10px; }
+  .surprise { margin: 8px 0; padding: 8px 11px; }
+  .hero-content .button-big { min-height: 45px; padding-block: 8px; }
+  .hero-art { height: min(40svh, 320px); }
+  .orbit-a { width: 165px; height: 165px; }
+  .orbit-b { width: 230px; height: 230px; }
+  .orbit-c { width: 320px; height: 320px; }
+  .hero-eye { width: 132px; height: 132px; }
+  .hero-view .trust-strip { padding-block: 6px; }
+  .app-shell:has(.hero-view) > .footer { padding-block: 7px; gap: 6px; }
+  .app-shell:has(.hero-view) .footer-bottom { padding-top: 5px; }
+}
