@@ -210,3 +210,17 @@ main h1:focus{outline:none}
   .app-shell:has(.hero-view) > .footer { padding-block: 7px; gap: 6px; }
   .app-shell:has(.hero-view) .footer-bottom { padding-top: 5px; }
 }
+
+
+/* Explain IP differences without adding trackers or third-party runtime calls. */
+.ip-explainer{margin:16px 0 0;border:1px solid #6be5d22b;border-radius:17px;background:#101d27b8;padding:16px 20px;color:#aabfd0;font-size:12px;line-height:2}
+.ip-explainer summary{display:flex;align-items:center;gap:10px;cursor:pointer;font-size:13px;font-weight:700;color:#96f2df;list-style:none}
+.ip-explainer summary::-webkit-details-marker{display:none}
+.ip-explainer summary::after{content:"+";margin-inline-start:auto;font-size:22px;font-weight:400;line-height:1}
+.ip-explainer[open] summary::after{content:"−"}
+.ip-explainer summary:focus-visible{outline:2px solid #74f2dc;outline-offset:5px;border-radius:3px}
+.ip-explainer p{margin:11px 0 0;line-height:2.05}
+.ip-explainer a{color:#8df3e2;text-decoration:underline;text-underline-offset:4px}
+.ip-explainer a:hover{color:#c4fff3}
+.ip-explainer code{color:#b8b1ff;font-family:ui-monospace,monospace;direction:ltr;unicode-bidi:embed}
+@media(max-width:650px){.ip-explainer{padding:14px 15px}}

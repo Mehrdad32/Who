@@ -79,6 +79,19 @@ flowchart LR
 
 **No visitor database, tracking pixel, or experiment-result collection pipeline.**
 
+## 🌐 Why WHO may show a different IP than another website
+
+WHO deliberately reports the **IP that Cloudflare sees when your browser requests WHO**, read from the trusted `CF-Connecting-IP` header in its stateless Pages Function. It does **not** claim to discover a separate ISP-assigned address behind your network, a VPN, proxy, corporate gateway or upstream relay. In such configurations, other IP-checking sites can report different egress addresses; neither value should automatically be called a bug.
+
+To diagnose a mismatch without any automatic third-party requests:
+
+1. Open WHO's [Lite view](https://who.mehrdad32.ir/lite) and note the **IP seen by WHO**.
+2. From the same browser and connection settings, open [Cloudflare trace on WHO's own domain](https://who.mehrdad32.ir/cdn-cgi/trace) and compare its `ip=` line; this endpoint is provided by Cloudflare, not the WHO app.
+3. Optionally open an **independent** IP checker in a separate tab (this sends a request to that service only when you open it), and compare the results.
+4. Check VPN/proxy rules and per-site routing, then refresh all pages. A difference can also be due to IPv4/IPv6 preference, carrier gateways or network path changes.
+
+The app intentionally does **not** contact third-party IP services or process untrusted `X-Forwarded-For` claims to force agreement. Cloudflare's documented `CF-Connecting-IP` semantics are the source of truth **for this site's incoming request only**. If a Cloudflare transform removes or rewrites that header, investigate the zone's rules rather than guessing a replacement address.
+
 ## 🛠 Run locally
 
 **Prerequisites:** Node.js and npm compatible with the versions specified in [`package.json`](package.json).
