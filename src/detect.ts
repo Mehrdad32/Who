@@ -122,7 +122,7 @@ export async function collectMetrics(server: ServerInfo | null, device: DeviceSu
   const add = (id: string, title: string, value: unknown, detail: string, source: Metric['source'], sensitivity: Metric['sensitivity'] = 'متوسط') =>
     result.push({ id, title, value: show(value), detail, source, sensitivity });
   const h = (key: string) => server?.headers?.[key] ?? null;
-  add('ip', 'آدرس IP عمومی', server?.ip, 'نشانی اتصال اینترنتی که سرور در این درخواست می‌بیند؛ معمولاً IP مودم، اپراتور یا VPN است، نه آدرس داخلی دستگاه.', 'HTTP', 'زیاد');
+  add('ip', 'IP دیده‌شده توسط WHO', server?.ip, 'IP فرستنده درخواست به Cloudflare، خوانده‌شده از هدر CF-Connecting-IP. اگر VPN، پروکسی یا واسط شبکه وجود داشته باشد، ممکن است با IP اعلام‌شده توسط سایت‌های دیگر متفاوت باشد. این مقدار لزوماً IP مستقیم سرویس اینترنت شما نیست.', 'HTTP', 'زیاد');
   add('ipgeo', 'موقعیت تقریبی از روی IP', [server?.city, server?.region, server?.country].filter(Boolean).join('، '), 'تخمین Cloudflare از محل شبکه؛ ممکن است به‌دلیل VPN یا اپراتور اشتباه باشد و GPS نیست.', 'HTTP', 'زیاد');
   add('isp', 'ارائه‌دهنده شبکه', server?.isp, 'نام سازمان شبکه یا مالک IP؛ در صورت عرضه توسط Cloudflare.', 'HTTP');
   add('browser', 'مرورگر و نسخه', `${device.browser} ${device.browserVersion}`, 'از اطلاعات شناسایی مرورگر؛ بعضی مرورگرها نسخه دقیق را پنهان می‌کنند.', 'JavaScript');
